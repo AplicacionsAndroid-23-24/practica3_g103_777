@@ -1,13 +1,16 @@
 package com.tecnocampus.practica3_g103_777;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,7 +24,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.inappmessaging.model.Button;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Spinner categorySpinner;
     private List<Integer> categoryIds = new ArrayList<>();
+    private boolean isGameInProgress = false;  // Variable to track game state
+    private Button startGameButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,47 +53,51 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        // Inicializar Firebase Auth
+
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Verificar si el usuario está logueado
+        // Check if the user is logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
-            // Redirigir a la pantalla de inicio de sesión
+            // Redirect to the login screen
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         } else {
-            // Continuar con el juego
+            // Continue with the game
             loadCategories();
         }
 
-        //Seleccionar preguntas de categoria seleccionada
+        // Set up the category spinner
         categorySpinner = findViewById(R.id.categorySpinner);
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                loadQuestions(categoryIds.get(position));
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // No se ha seleccionado nada
-            }
-        });
-
+        // Set up the ranking button
         View rankingButton = findViewById(R.id.ranking_button);
         rankingButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, RankingActivity.class);
             startActivity(intent);
         });
+
+        // Set up the start game button
+        startGameButton = findViewById(R.id.start_button);
+        startGameButton.setOnClickListener(v -> {
+            if (isGameInProgress) {
+                showNewGameConfirmationDialog();
+            } else {
+                startNewGame();
+            }
+        });
+
+        // Update start button text based on game state
+        updateStartButtonText();
     }
+
     private void loadCategories() {
         String url = "https://opentdb.com/api_category.php";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
-                    // Procesar la respuesta y llenar el Spinner
                     try {
                         JSONArray categories = response.getJSONArray("trivia_categories");
                         List<String> categoryNames = new ArrayList<>();
@@ -104,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }, error -> {
-            // Manejar error
             error.printStackTrace();
         });
 
@@ -132,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                             questions.add(new Question(questionText, correctAnswer, incorrectAnswers));
                         }
                         showQuestionFragment(questions);
+                        isGameInProgress = true;  // Mark game as in progress
+                        updateStartButtonText();  // Update button text to "Restart Game"
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -153,12 +163,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (user != null) {
             String userId = user.getUid();
-            String userEmail = user.getEmail(); // Obtener el correo electrónico del usuario
+            String userEmail = user.getEmail();
 
             Map<String, Object> score = new HashMap<>();
             score.put("correctAnswers", correctAnswers);
             score.put("timestamp", FieldValue.serverTimestamp());
-            score.put("email", userEmail); // Almacenar el correo electrónico del usuario
+            score.put("email", userEmail);
 
             db.collection("scores").document(userId)
                     .set(score)
@@ -167,11 +177,37 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, resultFragment)
                                 .commit();
+                        isGameInProgress = false;  // Mark game as not in progress
+                        updateStartButtonText();  // Update button text to "Start Game"
                     })
                     .addOnFailureListener(e -> {
-                        // Manejar error
                         e.printStackTrace();
                     });
+        }
+    }
+
+    private void startNewGame() {
+        // Logic to start a new game
+        int selectedCategoryPosition = categorySpinner.getSelectedItemPosition();
+        if (selectedCategoryPosition != AdapterView.INVALID_POSITION) {
+            loadQuestions(categoryIds.get(selectedCategoryPosition));
+        }
+    }
+
+    private void showNewGameConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Start New Game")
+                .setMessage("A game is already in progress. Do you want to start a new game?")
+                .setPositiveButton("Yes", (dialog, which) -> startNewGame())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void updateStartButtonText() {
+        if (isGameInProgress) {
+            startGameButton.setText("Restart Game");
+        } else {
+            startGameButton.setText("Start Game");
         }
     }
 }

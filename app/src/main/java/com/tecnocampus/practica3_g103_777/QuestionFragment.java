@@ -1,9 +1,6 @@
 package com.tecnocampus.practica3_g103_777;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +8,9 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import java.util.List;
 
@@ -23,7 +23,6 @@ public class QuestionFragment extends Fragment {
     public QuestionFragment(List<Question> questions) {
         this.questions = questions;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,18 +51,25 @@ public class QuestionFragment extends Fragment {
         Button nextButton = view.findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> {
             int selectedOptionId = optionsGroup.getCheckedRadioButtonId();
-            if (selectedOptionId != -1) {
+            if (selectedOptionId <= -1) {
+                // No option is selected, show a toast message
+                Toast.makeText(getContext(), "Please select an option.", Toast.LENGTH_SHORT).show();
+            } else {
+                // An option is selected
                 RadioButton selectedRadioButton = view.findViewById(selectedOptionId);
                 String selectedAnswer = selectedRadioButton.getText().toString();
-                if (selectedAnswer.equals(question.getCorrectAnswer())) {
-                    correctAnswers++;
-                }
-                currentQuestionIndex++;
-                if (currentQuestionIndex < questions.size()) {
-                    showQuestion(view, questions.get(currentQuestionIndex));
-                } else {
-                    ((MainActivity) getActivity()).showResults(correctAnswers);
-                }
+                if(selectedAnswer.isEmpty()){Toast.makeText(getContext(), "Please select an option.", Toast.LENGTH_SHORT).show();}
+                else {
+                    if (selectedAnswer.equals(question.getCorrectAnswer())) {
+                        correctAnswers++;
+                    }
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < questions.size()) {
+                        showQuestion(view, questions.get(currentQuestionIndex));
+                    } else {
+                        ((MainActivity) getActivity()).showResults(correctAnswers);
+                    }
+            ;    }
             }
         });
     }
