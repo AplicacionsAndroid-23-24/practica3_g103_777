@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "642144329164",
+    "project_id": "practica3-d3c77",
+    "storage_bucket": "practica3-d3c77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642144329164:android:54d426cef1e4ffbe52d169",
+        "android_client_info": {
+          "package_name": "com.tecnocampus.practica3_g103_777"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByHQbxWjbqURYV4srymE5brntk9lCa_zQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

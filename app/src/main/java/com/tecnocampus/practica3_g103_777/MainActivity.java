@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,11 +34,13 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
     private Spinner categorySpinner;
     private List<Integer> categoryIds = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         // Inicializar Firebase Auth
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         // Verificar si el usuario está logueado
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -73,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //TODO originalmente era un botón, pero petaba y ahora con el view no
         View rankingButton = findViewById(R.id.ranking_button);
         rankingButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, RankingActivity.class);

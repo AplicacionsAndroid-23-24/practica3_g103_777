@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.color.utilities.Score;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -18,7 +17,6 @@ import java.util.List;
 public class RankingActivity extends AppCompatActivity {
 
     private RankingAdapter adapter;
-    //TODO mismo error que en RankingAdapter
     private final List<Score> scoreList = new ArrayList<>();
 
     @Override

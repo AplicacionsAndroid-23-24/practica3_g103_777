@@ -7,16 +7,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.color.utilities.Score;
-
 import java.util.List;
 
 public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHolder> {
 
-    /*TODO los Score "Petan".
-    @SuppressLint("RestrictedApi") lo soluciona pero no se si se deberia usar
-    DESCRIPCION DEL ERROR:
-    Score can only be accessed from within the same library group (referenced groupId=`com.google.android.material` from groupId=`practica3_g103_777`)*/
     private List<Score> scores;
 
     public RankingAdapter(List<Score> scores) {
@@ -34,8 +28,6 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Score score = scores.get(position);
-        //TODO No pilla .getUsername y . getCorrectAnswer.
-        // @SuppressLint("RestrictedApi") tampoco lo soluciona
         holder.usernameTextView.setText(score.getUsername());
         holder.scoreTextView.setText(String.valueOf(score.getCorrectAnswers()));
     }
