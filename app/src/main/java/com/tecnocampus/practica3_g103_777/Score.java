@@ -1,24 +1,24 @@
 package com.tecnocampus.practica3_g103_777;
 
 public class Score {
-    private String username;
+    private String email;
     private int correctAnswers;
 
     public Score() {
         // Public no-arg constructor needed
     }
 
-    public Score(String username, int correctAnswers) {
-        this.username = username;
+    public Score(String email, int correctAnswers) {
+        this.email = email;
         this.correctAnswers = correctAnswers;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getCorrectAnswers() {

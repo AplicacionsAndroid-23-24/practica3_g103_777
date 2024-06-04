@@ -153,9 +153,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (user != null) {
             String userId = user.getUid();
+            String userEmail = user.getEmail(); // Obtener el correo electrónico del usuario
+
             Map<String, Object> score = new HashMap<>();
             score.put("correctAnswers", correctAnswers);
             score.put("timestamp", FieldValue.serverTimestamp());
+            score.put("email", userEmail); // Almacenar el correo electrónico del usuario
 
             db.collection("scores").document(userId)
                     .set(score)
