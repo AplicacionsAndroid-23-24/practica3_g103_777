@@ -1,6 +1,5 @@
 package com.tecnocampus.practica3_g103_777;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -39,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Spinner categorySpinner;
     private List<Integer> categoryIds = new ArrayList<>();
-    private boolean isGameInProgress = false;  // Variable to track game state
     private Button startGameButton;
+    private View rankingButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         categorySpinner = findViewById(R.id.categorySpinner);
 
         // Set up the ranking button
-        View rankingButton = findViewById(R.id.ranking_button);
+        rankingButton = findViewById(R.id.ranking_button);
         rankingButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, RankingActivity.class);
             startActivity(intent);
@@ -81,15 +80,8 @@ public class MainActivity extends AppCompatActivity {
         // Set up the start game button
         startGameButton = findViewById(R.id.start_button);
         startGameButton.setOnClickListener(v -> {
-            if (isGameInProgress) {
-                showNewGameConfirmationDialog();
-            } else {
-                startNewGame();
-            }
+            startNewGame();
         });
-
-        // Update start button text based on game state
-        updateStartButtonText();
     }
 
     private void loadCategories() {
@@ -140,8 +132,6 @@ public class MainActivity extends AppCompatActivity {
                             questions.add(new Question(questionText, correctAnswer, incorrectAnswers));
                         }
                         showQuestionFragment(questions);
-                        isGameInProgress = true;  // Mark game as in progress
-                        updateStartButtonText();  // Update button text to "Restart Game"
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -155,6 +145,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, questionFragment)
                 .commit();
+
+        // Hide the category spinner, start button, and ranking button
+        categorySpinner.setVisibility(View.GONE);
+        startGameButton.setVisibility(View.GONE);
+        rankingButton.setVisibility(View.GONE);
     }
 
     public void showResults(int correctAnswers) {
@@ -177,8 +172,11 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, resultFragment)
                                 .commit();
-                        isGameInProgress = false;  // Mark game as not in progress
-                        updateStartButtonText();  // Update button text to "Start Game"
+
+                        // Show the category spinner, start button, and ranking button
+                        categorySpinner.setVisibility(View.VISIBLE);
+                        startGameButton.setVisibility(View.VISIBLE);
+                        rankingButton.setVisibility(View.VISIBLE);
                     })
                     .addOnFailureListener(e -> {
                         e.printStackTrace();
@@ -201,13 +199,5 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", (dialog, which) -> startNewGame())
                 .setNegativeButton("No", null)
                 .show();
-    }
-
-    private void updateStartButtonText() {
-        if (isGameInProgress) {
-            startGameButton.setText("Restart Game");
-        } else {
-            startGameButton.setText("Start Game");
-        }
     }
 }
