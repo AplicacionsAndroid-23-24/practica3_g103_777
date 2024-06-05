@@ -10,6 +10,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
@@ -40,12 +41,15 @@ public class QuestionFragment extends Fragment {
         RadioGroup optionsGroup = view.findViewById(R.id.options_group);
         Button nextButton = view.findViewById(R.id.next_button);
 
-        questionText.setText(question.getQuestionText());
+        // Decodificar el texto de la pregunta a Unicode
+        questionText.setText(HtmlCompat.fromHtml(question.getQuestionText(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+
         List<String> options = question.getAllOptions();
         optionsGroup.removeAllViews();
         for (String option : options) {
             RadioButton radioButton = new RadioButton(getContext());
-            radioButton.setText(option);
+            // Decodificar el texto de la opción a Unicode
+            radioButton.setText(HtmlCompat.fromHtml(option, HtmlCompat.FROM_HTML_MODE_LEGACY));
             optionsGroup.addView(radioButton);
         }
 
