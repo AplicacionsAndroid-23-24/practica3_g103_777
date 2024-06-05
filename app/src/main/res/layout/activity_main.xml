@@ -13,22 +13,31 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Texto sobre el Spinner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select category:"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
         <Spinner
             android:id="@+id/categorySpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
+            android:layout_width="380dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="64dp"/>
 
         <Button
             android:id="@+id/start_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start Game"/>
+            android:layout_width="380dp"
+            android:layout_height="64dp"
+            android:text="Start Game"
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/ranking_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="380dp"
+            android:layout_height="64dp"
             android:layout_marginTop="16dp"
             android:text="Show Ranking" />
 
